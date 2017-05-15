@@ -2,7 +2,7 @@ const childProcess = require('child_process')
 
 const handleIpRouteResults = callback => (error, stdout, stderr) => {
 
-  if (stdout && isString(stdout)) {
+  if (stdout) {
     const ip = stdout
 
     if (ip) {

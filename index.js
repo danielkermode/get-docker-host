@@ -3,13 +3,7 @@ const childProcess = require('child_process')
 const handleIpRouteResults = callback => (error, stdout, stderr) => {
 
   if (stdout && isString(stdout)) {
-    const output = stdout
-    const match = output.match(/default via ((?:[0-9]{1,3}\.){3}[0-9]{1,3}) dev eth0/)
-
-    let ip = undefined
-    if (Array.isArray(match) && match.length >= 2) {
-      ip = match[1]
-    }
+    const ip = stdout
 
     if (ip) {
       callback(undefined, ip)

@@ -3,12 +3,17 @@ const childProcess = require('child_process')
 const handleIpRouteResults = callback => (error, stdout, stderr) => {
 
   if (stdout) {
-    const ip = stdout
+    const output = stdout
+    const match = output.match(/default via ((?:[0-9]{1,3}\.){3}[0-9]{1,3})/)
+    let ip = undefined
+    if (Array.isArray(match) && match.length >= 2) {
+      ip = match[1]
+    }
 
-    if (ip) {
+    if (ip && typeof ip === 'string') {
       callback(undefined, ip)
     } else {
-      callback(new Error("Unable to find ip with /sbin/ip route|awk '/default/ { print $3 }'"), undefined)
+      callback(new Error('Unable to find ip with /sbin/ip route'), undefined)
     }
   } else if (error) {
     callback(error, undefined)
@@ -20,5 +25,5 @@ const handleIpRouteResults = callback => (error, stdout, stderr) => {
 }
 
 module.exports = function (callback) {
-  childProcess.exec("/sbin/ip route|awk '/default/ { print $3 }'", handleIpRouteResults(callback))
+  childProcess.exec('/sbin/ip route', handleIpRouteResults(callback))
 }
